@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\CustomField;
 use App\Models\Customer;
 use App\Models\LeadSource;
 use App\Models\PipelineStage;
@@ -80,5 +81,16 @@ class DatabaseSeeder extends Seeder
         Customer::factory()->count(10)->create([
             'pipeline_stage_id' => $defaultPipelineStage,
         ]);
+
+        $customFields = [
+            'Birth Date',
+            'Company',
+            'Job Title',
+            'Family Members',
+        ];
+
+        foreach ($customFields as $customField) {
+            CustomField::create(['name' => $customField]);
+        }
     }
 }
