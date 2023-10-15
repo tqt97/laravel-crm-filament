@@ -11,7 +11,7 @@
 
 ## Step by step
 
-1. **Install Laravel and Filament**
+1. **[Install Laravel and Filament](https://github.com/tqt97/laravel-crm-filament/commit/f23830243bacd4772de841d9d503e010ca311566)**
 
      -  Laravel Installation: ```create-project laravel/laravel laravel-crm-filament```
      - Filament Installation
@@ -21,20 +21,20 @@
             php artisan make:filament-user
         ```
      - Logging Into Filament
-2. **Creating Lead Sources Resource**
+2. **[Creating Lead Sources Resource](https://github.com/tqt97/laravel-crm-filament/commit/fc2622217ed54bf67d1775b41869820961345696)**
     - Create lead_sources DB structure: Model/Migration and a belongsTo relationship with customers
     - Create Seeds with semi-real data without factories
     - Create a Filament Resource for Lead sources
     - Add a DeleteAction to the table with validation if that record is used
     - Add lead source information to the Customer Resource table/form
     - Divide the menu into two levels: introduce Settings parent menu item
-3. **Creating Customers Resource**
+3. **[Creating Customers Resource](https://github.com/tqt97/laravel-crm-filament/commit/3784a997dd0388c3da9d78e2ab65a7252d30ef3a)**
     - Create DB structure for Customers: Model/Migration
     - Create Factories/Seeds for testing data
     - Generate Filament Resource directly from the DB structure
     - Hide the deleted_at column from the table
     - Merge first_name and last_name into one table column
-4. **Creating Tags for Customers**
+4. **[Creating Tags for Customers](https://github.com/tqt97/laravel-crm-filament/commit/c22677088acbeb812ffd469118bdd63d25350e0e)**
     - Create tags DB structure: Model/Migration and a belongsToMany relationship with customers
     - Create Seeds with semi-real data without factories
     - Create a Filament Resource for Tags
@@ -42,7 +42,7 @@
     - Add a DeleteAction to the table with validation if that record is used
     - Add tags to the Customer form with Select::make()->multiple()
     - Add tags to the Customer table in the same column of name using formatStateUsing() and rendering a separate Blade View
-5. **Pipeline Stages Resource: Reorderable**
+5. **[Pipeline Stages Resource: Reorderable](https://github.com/tqt97/laravel-crm-filament/commit/d2ad40259aeb6ed6c9823f0610e00d4e0dc99df6)**
     - Create pipeline_stages DB structure: Model/Migration and a hasMany relationship to customers
     - Create Seeds with semi-real data without factories
     - Create a Filament Resource for Pipeline Stages
@@ -51,19 +51,19 @@
     - Add a Custom Action Set Default with confirmation
     - Add a DeleteAction to the table with validation if that record is used
     - Add pipeline stage information to the Customer Resource table/form
-6. **Moving Customers through Pipeline Stages**
+6. **[Moving Customers through Pipeline Stages](https://github.com/tqt97/laravel-crm-filament/commit/93410a572e3b6f630e1536e353a921ff1a6d651f)**
     - Create a CustomerPipelineStage Model to save the history of the Customer's Pipeline Stage changes and any comments added.
     - Add a custom Table Action to move customers to other pipeline stages.
     - Add creating and updating action Observers to our Customer Model to save the history.
-7. **Customers by Stage: Tabs with Numbers**
+7. **[Customers by Stage: Tabs with Numbers](https://github.com/tqt97/laravel-crm-filament/commit/69b0ebe6d3d79f2afdfb9ca98534f407a8869c48)**
     - Dynamically create tabs for each Pipeline Stage
     - Create a new tab called All to show all Customers
     - Add counters to each tab to show how many Customers are in each group
-8. **SoftDeletes: Archive and Restore Customers**
+8. **[SoftDeletes: Archive and Restore Customers](https://github.com/tqt97/laravel-crm-filament/commit/92c4523cd3bc408a8698bced145928043c4e98f8)**
     - Add the Archived tab to the Customers table
     - Add Delete button to the table
     - Add the Restore button to the Archived tab
     - Disable row click on the Archived tab
-9. **Customer View Page with Infolist**
-10. **Customer Documents: Upload/Download**
-11. **Custom Fields for Customers**
+9. **[Customer View Page with Infolist](https://github.com/tqt97/laravel-crm-filament/commit/59beb89b72011939b720d8a7ef33d3f7c99a717d)**
+10. **[Customer Documents: Upload/Download](https://github.com/tqt97/laravel-crm-filament/commit/c18cef80ab740af812dd5cca90f25ae761db6e72)**
+11. **[Custom Fields for Customers](https://github.com/tqt97/laravel-crm-filament/commit/db6e66bf036002f98a166fbfabd046bf48262879)**
