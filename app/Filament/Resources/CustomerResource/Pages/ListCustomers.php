@@ -44,6 +44,11 @@ class ListCustomers extends ListRecords
                     return $query->where('pipeline_stage_id', $pipelineStage->id);
                 });
         }
+        $tabs['archived'] = Tab::make('Archived')
+            ->badge(Customer::onlyTrashed()->count())
+            ->modifyQueryUsing(function ($query) {
+                return $query->onlyTrashed();
+            });
 
         return $tabs;
     }
