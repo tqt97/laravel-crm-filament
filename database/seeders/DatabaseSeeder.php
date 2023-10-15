@@ -20,5 +20,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => Hash::make('12341234'),
         ]);
+
+        \App\Models\Customer::factory()
+        ->count(10)
+        ->create();
     }
 }
