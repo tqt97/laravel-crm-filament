@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\PipelineStage;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -89,6 +90,34 @@ class CustomerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('Move to Stage')
+                    ->icon('heroicon-m-pencil-square')
+                    ->form([
+                        Forms\Components\Select::make('pipeline_stage_id')
+                            ->label('Status')
+                            ->options(PipelineStage::pluck('name', 'id')->toArray())
+                            ->default(function (Customer $record) {
+                                $currentPosition = $record->pipelineStage->position;
+                                return PipelineStage::where('position', '>', $currentPosition)->first()?->id;
+                            }),
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Notes')
+                    ])
+                    ->action(function (Customer $customer, array $data): void {
+                        $customer->pipeline_stage_id = $data['pipeline_stage_id'];
+                        $customer->save();
+
+                        $customer->pipelineStageLogs()->create([
+                            'pipeline_stage_id' => $data['pipeline_stage_id'],
+                            'notes' => $data['notes'],
+                            'user_id' => auth()->id()
+                        ]);
+
+                        Notification::make()
+                            ->title('Customer Pipeline Updated')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
