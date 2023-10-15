@@ -35,6 +35,8 @@ class CustomerResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->maxLength(65535)
                     ->columnSpanFull(),
+                Forms\Components\Select::make('lead_source_id')
+                    ->relationship('leadSource', 'name'),
             ]);
     }
 
@@ -52,6 +54,7 @@ class CustomerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('leadSource.name'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

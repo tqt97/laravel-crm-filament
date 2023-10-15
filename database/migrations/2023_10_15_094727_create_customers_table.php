@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\LeadSource;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone_number')->nullable();
             $table->text('description')->nullable();
+            $table->foreignIdFor(LeadSource::class)->nullable()->constrained();
             $table->timestamps();
             $table->softDeletes();
 

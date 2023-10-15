@@ -21,6 +21,21 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12341234'),
         ]);
 
+
+
+        $leadSources = [
+            'Website',
+            'Online AD',
+            'Twitter',
+            'LinkedIn',
+            'Webinar',
+            'Trade Show',
+            'Referral',
+        ];
+        foreach ($leadSources as $leadSource) {
+            \App\Models\LeadSource::create(['name' => $leadSource]);
+        }
+
         \App\Models\Customer::factory()
         ->count(10)
         ->create();
