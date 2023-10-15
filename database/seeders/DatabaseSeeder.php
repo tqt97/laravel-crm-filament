@@ -39,5 +39,14 @@ class DatabaseSeeder extends Seeder
         \App\Models\Customer::factory()
         ->count(10)
         ->create();
+
+        $tags = [
+            'Priority',
+            'VIP'
+        ];
+
+        foreach ($tags as $tag) {
+            \App\Models\Tag::create(['name' => $tag]);
+        }
     }
 }
