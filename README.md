@@ -67,3 +67,35 @@
 9. **[Customer View Page with Infolist](https://github.com/tqt97/laravel-crm-filament/commit/59beb89b72011939b720d8a7ef33d3f7c99a717d)**
 10. **[Customer Documents: Upload/Download](https://github.com/tqt97/laravel-crm-filament/commit/c18cef80ab740af812dd5cca90f25ae761db6e72)**
 11. **[Custom Fields for Customers](https://github.com/tqt97/laravel-crm-filament/commit/db6e66bf036002f98a166fbfabd046bf48262879)**
+12. **[Customers in a Draggable Kanban Board](https://github.com/tqt97/laravel-crm-filament)**
+    - Creating Custom Page - Our Customer Board ```php artisan make:filament-page ManageCustomerStages```
+13. **[Roles/Permissions: Manage Employees](https://github.com/tqt97/laravel-crm-filament)**
+    - Creating Roles Model and Database structure
+    - Creating Users Resource
+    - Adding Employees to Customers
+    - Adding Employee Changes to Customer History
+    - Limiting Employee Access
+14. **[Employee User Invitations Process](https://github.com/tqt97/laravel-crm-filament)**
+    - Create Invitation Model and Database tables
+    - Modify UserResource Create Button Action - to Invite the Employee
+    - Creating Custom Registration Page
+    - Creating and Sending the Email
+15. **[Customer Tasks and Calendar View](https://github.com/tqt97/laravel-crm-filament)**
+    - Create Task Model and Database
+    - Add Create Task button to the Customer list
+    - Add Task List to the Customer Page
+    - Add Task Resource with Tabs
+    - Adding Tabs to the Task Resource
+    - Add a Calendar Page for Tasks
+16. **[Create Customer Quotes with Products](https://github.com/tqt97/laravel-crm-filament)**
+    - Creating the Product Model
+    - Creating Product Resource
+    - Creating the Quote Model
+    - Creating Quote Resource
+    - Create Quotes From Customer Table
+17. **[Generate Quote PDF](https://github.com/tqt97/laravel-crm-filament)**
+    - Creating a Simple View Page for Quote
+    - Installing PDF Package
+    - Generating PDF
+    - Displaying PDF in View Page
+

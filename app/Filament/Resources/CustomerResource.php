@@ -2,27 +2,40 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CustomerResource\Pages;
-use App\Filament\Resources\CustomerResource\RelationManagers;
-use App\Models\CustomField;
-use App\Models\Customer;
-use App\Models\PipelineStage;
 use Filament\Forms;
-use Filament\Forms\Form;
+use App\Models\Role;
+use App\Models\Task;
+use App\Models\User;
+use Filament\Tables;
 use Filament\Forms\Get;
-use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\ViewEntry;
+use App\Models\Customer;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use App\Models\CustomField;
+use App\Models\PipelineStage;
 use Filament\Infolists\Infolist;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
+use Filament\Infolists\Components\Tabs;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\FileUpload;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\Section;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ViewEntry;
+use Filament\Infolists\Components\Actions\Action;
+use App\Filament\Resources\CustomerResource\Pages;
+use Filament\Infolists\Components\RepeatableEntry;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\QuoteResource\Pages\CreateQuote;
+use App\Filament\Resources\CustomerResource\RelationManagers;
 
 class CustomerResource extends Resource
 {
@@ -34,7 +47,12 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
-
+                Forms\Components\Section::make('Employee Information')
+                    ->schema([
+                        Forms\Components\Select::make('employee_id')
+                            ->options(User::where('role_id', Role::where('name', 'Employee')->first()->id)->pluck('name', 'id'))
+                    ])
+                    ->hidden(!auth()->user()->isAdmin()),
                 Forms\Components\Section::make('Customer Details')
                     ->schema([
                         Forms\Components\TextInput::make('first_name')
@@ -116,6 +134,10 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('employee.name')
+                    ->hidden(!auth()->user()->isAdmin()),
+                Tables\Columns\TextColumn::make('first_name')
+                    ->label('Name'),
                 Tables\Columns\TextColumn::make('first_name')
                     ->label('Name')
                     ->formatStateUsing(function ($record) {
@@ -148,38 +170,67 @@ class CustomerResource extends Resource
                 // Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->hidden(fn ($record) => $record->trashed()),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
-                Tables\Actions\Action::make('Move to Stage')
-                    ->hidden(fn ($record) => $record->trashed())
-                    ->icon('heroicon-m-pencil-square')
-                    ->form([
-                        Forms\Components\Select::make('pipeline_stage_id')
-                            ->label('Status')
-                            ->options(PipelineStage::pluck('name', 'id')->toArray())
-                            ->default(function (Customer $record) {
-                                $currentPosition = $record->pipelineStage->position;
-                                return PipelineStage::where('position', '>', $currentPosition)->first()?->id;
-                            }),
-                        Forms\Components\Textarea::make('notes')
-                            ->label('Notes')
-                    ])
-                    ->action(function (Customer $customer, array $data): void {
-                        $customer->pipeline_stage_id = $data['pipeline_stage_id'];
-                        $customer->save();
+                Tables\Actions\ActionGroup::make([
 
-                        $customer->pipelineStageLogs()->create([
-                            'pipeline_stage_id' => $data['pipeline_stage_id'],
-                            'notes' => $data['notes'],
-                            'user_id' => auth()->id()
-                        ]);
+                    Tables\Actions\EditAction::make()->hidden(fn ($record) => $record->trashed()),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(),
+                    Tables\Actions\Action::make('Move to Stage')
+                        ->hidden(fn ($record) => $record->trashed())
+                        ->icon('heroicon-m-pencil-square')
+                        ->form([
+                            Forms\Components\Select::make('pipeline_stage_id')
+                                ->label('Status')
+                                ->options(PipelineStage::pluck('name', 'id')->toArray())
+                                ->default(function (Customer $record) {
+                                    $currentPosition = $record->pipelineStage->position;
+                                    return PipelineStage::where('position', '>', $currentPosition)->first()?->id;
+                                }),
+                            Forms\Components\Textarea::make('notes')
+                                ->label('Notes')
+                        ])
+                        ->action(function (Customer $customer, array $data): void {
+                            $customer->pipeline_stage_id = $data['pipeline_stage_id'];
+                            $customer->save();
 
-                        Notification::make()
-                            ->title('Customer Pipeline Updated')
-                            ->success()
-                            ->send();
-                    }),
+                            $customer->pipelineStageLogs()->create([
+                                'pipeline_stage_id' => $data['pipeline_stage_id'],
+                                'notes' => $data['notes'],
+                                'user_id' => auth()->id()
+                            ]);
+
+                            Notification::make()
+                                ->title('Customer Pipeline Updated')
+                                ->success()
+                                ->send();
+                        }),
+                    Tables\Actions\Action::make('Add Task')
+                        ->icon('heroicon-s-clipboard-document')
+                        ->form([
+                            Forms\Components\RichEditor::make('description')
+                                ->required(),
+                            Forms\Components\Select::make('user_id')
+                                ->preload()
+                                ->searchable()
+                                ->relationship('employee', 'name'),
+                            Forms\Components\DatePicker::make('due_date')
+                                ->native(false),
+
+                        ])
+                        ->action(function (Customer $customer, array $data) {
+                            $customer->tasks()->create($data);
+
+                            Notification::make()
+                                ->title('Task created successfully')
+                                ->success()
+                                ->send();
+                        }),
+                    Tables\Actions\Action::make('Create Quote')
+                        ->icon('heroicon-m-book-open')
+                        ->url(function ($record) {
+                            return CreateQuote::getUrl(['customer_id' => $record->id]);
+                        })
+                ])
             ])
             ->recordUrl(function ($record) {
                 // If the record is trashed, return null
@@ -263,7 +314,65 @@ class CustomerResource extends Resource
                             ->label('')
                             ->view('infolists.components.pipeline-stage-history-list')
                     ])
-                    ->collapsible()
+                    ->collapsible(),
+                Tabs::make('Tasks')
+                    ->tabs([
+                        Tabs\Tab::make('Completed')
+                            ->badge(fn ($record) => $record->completedTasks->count())
+                            ->schema([
+                                RepeatableEntry::make('completedTasks')
+                                    ->hiddenLabel()
+                                    ->schema([
+                                        TextEntry::make('description')
+                                            ->html()
+                                            ->columnSpanFull(),
+                                        TextEntry::make('employee.name')
+                                            ->hidden(fn ($state) => is_null($state)),
+                                        TextEntry::make('due_date')
+                                            ->hidden(fn ($state) => is_null($state))
+                                            ->date(),
+                                    ])
+                                    ->columns()
+                            ]),
+                        Tabs\Tab::make('Incomplete')
+                            ->badge(fn ($record) => $record->incompleteTasks->count())
+                            ->schema([
+                                RepeatableEntry::make('incompleteTasks')
+                                    ->hiddenLabel()
+                                    ->schema([
+                                        TextEntry::make('description')
+                                            ->html()
+                                            ->columnSpanFull(),
+                                        TextEntry::make('employee.name')
+                                            ->hidden(fn ($state) => is_null($state)),
+                                        TextEntry::make('due_date')
+                                            ->hidden(fn ($state) => is_null($state))
+                                            ->date(),
+                                        TextEntry::make('is_completed')
+                                            ->formatStateUsing(function ($state) {
+                                                return $state ? 'Yes' : 'No';
+                                            })
+                                            ->suffixAction(
+                                                Action::make('complete')
+                                                    ->button()
+                                                    ->requiresConfirmation()
+                                                    ->modalHeading('Mark task as completed?')
+                                                    ->modalDescription('Are you sure you want to mark this task as completed?')
+                                                    ->action(function (Task $record) {
+                                                        $record->is_completed = true;
+                                                        $record->save();
+
+                                                        Notification::make()
+                                                            ->title('Task marked as completed')
+                                                            ->success()
+                                                            ->send();
+                                                    })
+                                            ),
+                                    ])
+                                    ->columns(3)
+                            ])
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 
