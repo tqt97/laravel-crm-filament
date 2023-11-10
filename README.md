@@ -75,16 +75,22 @@
     - Adding Employees to Customers
     - Adding Employee Changes to Customer History
     - Limiting Employee Access
-14. **Employee User Invitations Process()[https://github.com/tqt97/laravel-crm-filament]**
+14. **[Employee User Invitations Process](https://github.com/tqt97/laravel-crm-filament)**
     - Create Invitation Model and Database tables
     - Modify UserResource Create Button Action - to Invite the Employee
     - Creating Custom Registration Page
     - Creating and Sending the Email
-15. **Customer Tasks and Calendar View()[https://github.com/tqt97/laravel-crm-filament]**
+15. **[Customer Tasks and Calendar View](https://github.com/tqt97/laravel-crm-filament)**
     - Create Task Model and Database
     - Add Create Task button to the Customer list
     - Add Task List to the Customer Page
     - Add Task Resource with Tabs
     - Adding Tabs to the Task Resource
     - Add a Calendar Page for Tasks
+16. **[Create Customer Quotes with Products](https://github.com/tqt97/laravel-crm-filament)**
+    - Creating the Product Model
+    - Creating Product Resource
+    - Creating the Quote Model
+    - Creating Quote Resource
+    - Create Quotes From Customer Table
 
