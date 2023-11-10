@@ -22,6 +22,8 @@ use Filament\Forms\Components\Actions\Action;
 use App\Filament\Resources\QuoteResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\QuoteResource\RelationManagers;
+use Filament\Infolists\Components\ViewEntry;
+use Filament\Infolists\Infolist;
 
 class QuoteResource extends Resource
 {
@@ -156,7 +158,10 @@ class QuoteResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->recordUrl(function ($record) {
+                return Pages\ViewQuote::getUrl([$record]);
+            });
     }
 
     public static function getRelations(): array
@@ -171,6 +176,7 @@ class QuoteResource extends Resource
         return [
             'index' => Pages\ListQuotes::route('/'),
             'create' => Pages\CreateQuote::route('/create'),
+            'view' => Pages\ViewQuote::route('/{record}'),
             'edit' => Pages\EditQuote::route('/{record}/edit'),
         ];
     }
@@ -194,5 +200,18 @@ class QuoteResource extends Resource
 
         data_set($livewire, $statePath . '.subtotal', number_format($subtotal, 2, '.', ''));
         data_set($livewire, $statePath . '.total', number_format($subtotal + ($subtotal * (data_get($livewire, $statePath . '.taxes') / 100)), 2, '.', ''));
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                ViewEntry::make('invoice')
+                    ->columnSpanFull()
+                    ->viewData([
+                        'record' => $infolist->record
+                    ])
+                    ->view('infolists.components.quote-invoice-view')
+            ]);
     }
 }

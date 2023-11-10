@@ -93,4 +93,9 @@
     - Creating the Quote Model
     - Creating Quote Resource
     - Create Quotes From Customer Table
+17. **[Generate Quote PDF](https://github.com/tqt97/laravel-crm-filament)**
+    - Creating a Simple View Page for Quote
+    - Installing PDF Package
+    - Generating PDF
+    - Displaying PDF in View Page
 
