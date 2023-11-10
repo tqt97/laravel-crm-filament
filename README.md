@@ -80,4 +80,11 @@
     - Modify UserResource Create Button Action - to Invite the Employee
     - Creating Custom Registration Page
     - Creating and Sending the Email
+15. **Customer Tasks and Calendar View()[https://github.com/tqt97/laravel-crm-filament]**
+    - Create Task Model and Database
+    - Add Create Task button to the Customer list
+    - Add Task List to the Customer Page
+    - Add Task Resource with Tabs
+    - Adding Tabs to the Task Resource
+    - Add a Calendar Page for Tasks
 
