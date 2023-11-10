@@ -51,8 +51,8 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // return true; // @todo Change this to check for access level
-        return $this->role->name === 'Admin';
+        return true; // @todo Change this to check for access level
+        // return $this->role->name === 'Admin';
     }
 
     public function role(): BelongsTo

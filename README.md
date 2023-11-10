@@ -75,3 +75,9 @@
     - Adding Employees to Customers
     - Adding Employee Changes to Customer History
     - Limiting Employee Access
+14. **Employee User Invitations Process()[https://github.com/tqt97/laravel-crm-filament]**
+    - Create Invitation Model and Database tables
+    - Modify UserResource Create Button Action - to Invite the Employee
+    - Creating Custom Registration Page
+    - Creating and Sending the Email
+
