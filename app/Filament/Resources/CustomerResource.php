@@ -2,27 +2,36 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CustomerResource\Pages;
-use App\Filament\Resources\CustomerResource\RelationManagers;
-use App\Models\CustomField;
-use App\Models\Customer;
-use App\Models\PipelineStage;
 use Filament\Forms;
-use Filament\Forms\Form;
+use App\Models\Role;
+use App\Models\User;
+use Filament\Tables;
 use Filament\Forms\Get;
-use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\ViewEntry;
+use App\Models\Customer;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use App\Models\CustomField;
+use App\Models\PipelineStage;
 use Filament\Infolists\Infolist;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\FileUpload;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\Section;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ViewEntry;
+use App\Filament\Resources\CustomerResource\Pages;
+use Filament\Infolists\Components\RepeatableEntry;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\CustomerResource\RelationManagers;
 
 class CustomerResource extends Resource
 {
@@ -34,7 +43,12 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
-
+                Forms\Components\Section::make('Employee Information')
+                    ->schema([
+                        Forms\Components\Select::make('employee_id')
+                            ->options(User::where('role_id', Role::where('name', 'Employee')->first()->id)->pluck('name', 'id'))
+                    ])
+                    ->hidden(!auth()->user()->isAdmin()),
                 Forms\Components\Section::make('Customer Details')
                     ->schema([
                         Forms\Components\TextInput::make('first_name')
@@ -116,6 +130,10 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('employee.name')
+                    ->hidden(!auth()->user()->isAdmin()),
+                Tables\Columns\TextColumn::make('first_name')
+                    ->label('Name'),
                 Tables\Columns\TextColumn::make('first_name')
                     ->label('Name')
                     ->formatStateUsing(function ($record) {

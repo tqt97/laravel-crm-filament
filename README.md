@@ -69,3 +69,9 @@
 11. **[Custom Fields for Customers](https://github.com/tqt97/laravel-crm-filament/commit/db6e66bf036002f98a166fbfabd046bf48262879)**
 12. **[Customers in a Draggable Kanban Board](https://github.com/tqt97/laravel-crm-filament)**
     - Creating Custom Page - Our Customer Board ```php artisan make:filament-page ManageCustomerStages```
+13. **[Roles/Permissions: Manage Employees](https://github.com/tqt97/laravel-crm-filament)**
+    - Creating Roles Model and Database structure
+    - Creating Users Resource
+    - Adding Employees to Customers
+    - Adding Employee Changes to Customer History
+    - Limiting Employee Access
